@@ -1,0 +1,99 @@
+html, body {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.navbar, .nav-link {
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #161616;
+}
+
+body {
+    color: #171717;
+    background-color: #fefefe;
+}
+
+.navbar, .nav-link {
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #161616;
+}
+
+.intro {
+    position: relative;
+    left: 20px;
+    padding-top:250px;
+    font-size: 60px;
+}
+
+.info {
+    position: relative;
+    padding-left: 1500px;
+    padding-top: 200px;
+}
+
+#location {
+    position: relative;
+    top: -15px;
+}
+
+#about {
+    padding-top: 140px; 
+}
+
+#projects {
+    padding-top: 100px;
+}
+
+#contact {
+    padding-top:200px;
+    padding-bottom: 75px;
+}
+
+#projects .card {
+    position: relative;
+    width: 350px;
+    height: 250px;
+    max-width: 350px;
+    background-color: #fafafa;
+    border: none;
+    transition: all 0.3s ease;
+    top: 0;
+}
+
+#about .card {
+    position: relative;
+    height: 290px;
+    width: 1350px;
+    max-width: 1350px;
+    background-color: #fafafa;
+    border: none;
+    transition: all 0.3s ease;
+    top: 0;
+}
+
+#projects .card:hover {
+    top: -5px;
+}
+
+#projects .tags {
+    border: solid;
+    width: 100px;
+    margin-top: 50px;
+    border-radius: 8px;
+    background-color: #f1f1f1;
+    border: 1px solid transparent;
+}
+
+#about .tags {
+    border: solid;
+    width: 100px;
+    border-radius: 8px;
+    background-color: #f1f1f1;
+    border: 1px solid transparent;
+}
