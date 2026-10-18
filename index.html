@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>sofiane's portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" sizes="32x32" href="img/yoshitomonara.jpg">
+<script>
+(function(){var t;try{t=localStorage.getItem('theme')}catch(e){}
+if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+document.documentElement.dataset.theme=t})();
+</script>
+<style>
+:root{--bg:#fff;--fg:#000;--mute:#9a9a9a;--panel:#f4f4f4;--accent:#4f6bff;--line:#e2e2e2;--side:190px}
+:root[data-theme="dark"]{--bg:#0e0e0e;--fg:#ececec;--mute:#7d7d7d;--panel:#1b1b1b;--accent:#8da0ff;--line:#2c2c2c}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--fg);font:14px/1.3 "Space Mono",ui-monospace,Menlo,Consolas,monospace;transition:background .3s,color .3s}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:1px dashed var(--accent);outline-offset:3px}
+ol{list-style:none;margin:0;padding:0}
+
+/* Structure */
+.shell{display:grid;grid-template-columns:var(--side) minmax(0,1fr);padding:14px 16px}
+.side{position:sticky;top:14px;align-self:start;animation:fade .6s ease both}
+.name{margin:0 0 34px;font:inherit}
+.side a{display:block}
+.side .gap{margin-top:16px}
+
+/* Horloge et thème */
+.top{position:fixed;top:12px;right:16px;z-index:2;display:flex;align-items:center;gap:8px;color:var(--mute)}
+.top button:hover{color:var(--fg)}
+.top svg{display:block}
+.top .sun{display:none}
+[data-theme="dark"] .top .sun{display:block}
+[data-theme="dark"] .top .moon{display:none}
+
+/* Sélection : majuscules, bleu et ">" (pages et filtres) */
+.sel::before{content:">";display:inline-block;width:0;opacity:0;overflow:hidden;vertical-align:top;transition:width .2s,opacity .2s}
+.sel.on{color:var(--accent);text-transform:uppercase}
+.sel.on::before{width:2ch;opacity:1}
+
+/* Animations de chargement */
+.enter [data-a]{animation:rise .5s ease both;animation-delay:calc(var(--i,0)*80ms)}
+@keyframes rise{from{opacity:0;transform:translateY(4px)}}
+@keyframes fade{from{opacity:0}}
+.fade{animation:fade .25s ease both}
+
+/* Home */
+#home{position:fixed;inset:0;display:grid;align-content:start;justify-content:center;text-align:center;padding:49vh 24px 0;pointer-events:none}
+#home>*{pointer-events:auto}
+.dots{padding-left:1px;letter-spacing:1px}
+.dots i{display:inline-block;font-style:normal;animation:blink 1.2s ease-in-out infinite}
+.dots i:nth-child(2){animation-delay:.2s}
+.dots i:nth-child(3){animation-delay:.4s}
+.lead{text-align:center}
+.lead[aria-expanded="true"] .dots i{animation:none}
+.hint{display:inline-block;margin-left:8px;vertical-align:-1px;color:var(--mute);transition:transform .3s,color .2s}
+.lead:hover .hint{color:var(--fg)}
+.lead[aria-expanded="true"] .hint{transform:rotate(180deg)}
+@keyframes blink{0%,70%,100%{opacity:.25;transform:none}35%{opacity:1;transform:translateY(-3px)}}
+.more{display:grid;grid-template-rows:0fr;opacity:0;margin-top:0;color:var(--mute);transition:grid-template-rows .45s ease,opacity .45s ease,margin-top .45s ease}
+.more.open{grid-template-rows:1fr;opacity:1;margin-top:14px}
+.more span{overflow:hidden;min-height:0}
+
+/* Documentation */
+#documentation{display:grid;grid-template-columns:minmax(0,24rem) minmax(0,1fr);column-gap:3rem;align-items:start}
+.filter{margin:0 0 34px}
+.label{margin:0 0 6px;padding-left:4ch}
+.item{display:block}
+.item:hover,.item.pick{color:var(--accent)}
+.mute{color:var(--mute)}
+.detail h2{font:inherit;margin:0 0 20px}
+.detail p{margin:0 0 20px}
+.detail{justify-self:end;width:clamp(20rem,36vw,44rem);max-width:calc(100% - 4vw);margin-right:4vw}
+
+/* Miscellaneous : compétences et démineur */
+.group{font:inherit;margin:0 0 6px;color:var(--mute)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}
+.chip{min-width:5rem;padding:2px 10px;text-align:center;font-size:13px;background:var(--panel);border:1px solid var(--line);border-radius:6px}
+.mines{margin-top:34px}
+.mines .mi{margin:0 0 10px;min-height:1.3em;white-space:pre-wrap}
+.grid{display:grid;grid-template-columns:repeat(9,1fr);gap:2px;width:min(100%,20rem);user-select:none}
+.c{display:grid;place-items:center;aspect-ratio:1;padding:0;font-size:13px;background:var(--panel);border:1px solid var(--line)}
+.c:not(.r):hover{border-color:var(--accent)}
+.c.r{background:transparent;cursor:default}
+.c.f{color:var(--accent)}
+.c.x{background:#d04a3f;color:#fff}
+.n1{color:var(--accent)}.n2{color:#3a9a62}.n3{color:#d04a3f}.n4{color:#8a4fd0}
+
+/* Presentation */
+.text{max-width:62rem}
+.text p{margin:0 0 20px}
+.stage{display:grid;justify-items:center;margin-top:44px}
+.slide{width:min(420px,86vw);aspect-ratio:1;padding:30px;background:var(--panel)}
+.slide img{display:block;width:100%;height:100%;object-fit:contain;transition:opacity .15s}
+.slide img.out{opacity:0}
+.ctrl{display:flex;gap:8px;margin-top:12px}
+.ctrl button:hover{color:var(--accent)}
+.cap{margin:10px 0 0;min-height:1.3em;font-size:12px;color:var(--mute)}
+
+@media (min-width:1001px){
+  #presentation{display:grid;grid-template-rows:1fr auto 1fr;min-height:calc(100vh - 28px)}
+  .text{align-self:start}
+  .stage{position:relative;justify-self:center;width:min(420px,86vw);margin:0 var(--side) 0 0}
+  .slide{width:100%}
+  .ctrl{position:absolute;top:100%;left:0;right:0;justify-content:center}
+  .cap{position:absolute;top:100%;left:-6rem;right:-6rem;margin-top:42px;text-align:center}
+}
+@media (max-width:1000px){
+  #documentation{grid-template-columns:minmax(0,1fr);row-gap:36px}
+  .detail{justify-self:start;width:100%;max-width:34rem;margin-right:0}
+}
+@media (max-width:760px){
+  .shell{grid-template-columns:1fr}
+  .side{position:static;margin-bottom:28px}
+  .side nav{display:flex;flex-wrap:wrap;gap:4px 18px}
+  .side .gap{margin:0}
+  #home{padding-top:42vh}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <button id="theme" aria-label="Basculer entre mode clair et mode sombre">
+    <svg class="moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+  </button>
+  <time id="clock">--:--</time>
+</div>
+
+<div class="shell">
+  <header class="side">
+    <h1 class="name">SOFIANE DOUVENEAU</h1>
+    <nav aria-label="Navigation principale">
+      <a class="sel" href="#home" data-v="home">Home</a>
+      <a class="sel" href="#documentation" data-v="documentation">Documentation</a>
+      <a class="sel" href="#presentation" data-v="presentation">Presentation</a>
+      <!-- Remplace par ton adresse e-mail -->
+      <a class="gap" href="mailto:prenom.nom@exemple.fr">Email</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- HOME -->
+    <section id="home" hidden>
+      <p data-a><button class="lead" id="lead" aria-expanded="false" aria-controls="more">Undergraduate student in Computer Science at the IUT de Villetaneuse.<span class="dots" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span><svg class="hint" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button></p>
+      <div class="more" id="more"><span>I am currently looking for an internship.</span></div>
+    </section>
+
+    <!-- DOCUMENTATION -->
+    <section id="documentation" hidden>
+      <div>
+        <!-- Les data-t doivent correspondre aux tags des projets dans le script -->
+        <p class="filter" id="filter" data-a>Filter: <button class="sel" data-t="python">#python</button>, <button class="sel" data-t="sql">#sql</button>, <button class="sel" data-t="fun">#fun</button>, <button class="sel" data-t="java">#java</button></p>
+        <p class="label" data-a>Index</p>
+        <div data-a><ol id="list"></ol></div>
+      </div>
+      <article class="detail" id="detail" aria-live="polite"></article>
+    </section>
+
+    <!-- PRESENTATION -->
+    <section id="presentation" hidden>
+      <div class="text" data-a>
+        <p>Lorem Ipsum EST;</p>
+        <p>Dolor sit amet, consectetur adipiscing elit. Ut nisl metus, accumsan id eros id, vehicula tincidunt nisl. Nulla sit amet urna ut mi tempor euismod. Fusce elementum sapien eget elit sodales fringilla.</p>
+        <p>Curabitur congue accumsan ante, consectetur eleifend purus laoreet in. Ut facilisis tincidunt neque in pharetra. In ut libero ex commodo venenatis ac vel ligula.</p>
+      </div>
+      <div class="stage" data-a>
+        <div class="slide"><img id="art" alt=""></div>
+        <div class="ctrl">
+          <button id="prev" aria-label="Peinture précédente">[&lt;]</button>
+          <button id="next" aria-label="Peinture suivante">[&gt;]</button>
+        </div>
+        <p class="cap" id="cap"></p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const views = ['home','documentation','presentation'];
+
+/* Images : renseigne src avec le chemin de ton fichier (ex. 'img/projet-a.jpg').
+   Tant que src est vide, une image de remplacement est affichée. */
+const ph = (t,w,h) => 'data:image/svg+xml,' + encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="#fff" stroke="#888" stroke-width="2"/><path d="M0 0L${w} ${h}" stroke="#ccc"/><text x="10" y="${h-10}" font-family="monospace" font-size="11" fill="#777">${t}</text></svg>`);
+
+/* Projets : chaque projet a sa propre présentation (text : un paragraphe par entrée) */
+const PROJECTS = [
+  {id:'00', title:'Miscellaneous', tags:['fun'], game:true,
+    text:['The languages, libraries, and tools I’ve mastered— followed by a game of Minesweeper to help you unwind.'],
+    skills:{
+      'Languages':['C','CSS','HTML','Java','JavaScript','PostgreSQL','Python'],
+      'Frameworks & Libraries':['Bootstrap','Matplotlib','Numpy'],
+      'Tools':['Jupyter','VSCode']}},
+  {id:'01', title:'Project A', tags:['python','sql'], text:[
+    '',
+    'Technologies :']},
+  {id:'02', title:'Project B', tags:['python'], text:[
+    '',
+    'Technologies :']},
+  {id:'03', title:'Project C', tags:['sql','fun'], text:[
+    '',
+    'Technologies : ']},
+  {id:'04', title:'Project D', tags:['sql','fun'], text:[
+    '',
+    'Technologies : ']},
+  {id:'05', title:'Project E', tags:['java','fun'], text:[
+  "As part of a programming course, we were tasked with developing a word-guessing game inspired by Wordle, called FindMyWord. The objective was to create a functional game using a predefined list of words provided by our professors. The project involved implementing the game's core mechanics, including word selection, user input, and guess validation. A key requirement was the use of Java interfaces to learn about abstraction and how to apply this concept in practice. We were also guided to use a specific set of files to structure the project and separate responsibilities between components. This organization helped us understand code modularity, maintainability, and the importance of following a structured approach to software development.",
+  'Technologies : Java.']}
+];
+
+/* Peintures du slider */
+const PAINTINGS = [
+  {src:'img/rembrandt.jpg', title:'Christ in the Storm on the Sea of Galilee ', artist:'Rembrandt'},
+  {src:'img/klimt.jpg', title:'The Kiss', artist:'Gustav Klimt'},
+  {src:'img/yoji.png', title:'Fall 2020', artist:'Yoji Yamamoto'},
+  {src:'img/erd.png', title:'Fall 2026', artist:'Enfants Riches Déprimés'}
+];
+
+/* Horloge */
+const tick = () => { $('#clock').textContent = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); };
+tick(); setInterval(tick, 1000);
+
+/* Mode sombre (mémorisé pour toutes les pages) */
+$('#theme').onclick = () => {
+  const t = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = t;
+  try { localStorage.setItem('theme', t); } catch(e) {}
+};
+
+/* Navigation par ancre */
+function route(){
+  const h = views.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'home';
+  views.forEach(v => {
+    const s = $('#'+v);
+    s.hidden = v !== h;
+    if (v === h) {
+      s.classList.remove('enter');
+      s.querySelectorAll('[data-a]').forEach((el,i) => el.style.setProperty('--i', i));
+      void s.offsetWidth;
+      s.classList.add('enter');
+    }
+  });
+  document.querySelectorAll('[data-v]').forEach(a => {
+    const on = a.dataset.v === h;
+    a.classList.toggle('on', on);
+    on ? a.setAttribute('aria-current','page') : a.removeAttribute('aria-current');
+  });
+}
+addEventListener('hashchange', route);
+route();
+
+/* Home : un clic sur la phrase déroule le message suivant */
+$('#lead').onclick = e => {
+  const open = $('#more').classList.toggle('open');
+  e.currentTarget.setAttribute('aria-expanded', open);
+};
+
+/* Documentation : index, filtre et détail */
+let tag = null, sel = null;
+function renderList(){
+  const L = $('#list');
+  const items = PROJECTS.filter(p => !tag || p.tags.includes(tag));
+  L.innerHTML = items.map(p => `<li><button class="item${p===sel?' pick':''}" data-id="${p.id}">${p.id}. ${p.title}</button></li>`).join('') || '<li class="mute">Aucun projet</li>';
+  L.classList.remove('fade'); void L.offsetWidth; L.classList.add('fade');
+}
+function renderDetail(){
+  const d = $('#detail');
+  if (!sel) { d.innerHTML = ''; return; }
+  const chips = o => Object.entries(o).map(([g,a]) => `<h3 class="group">${g}</h3><div class="chips">${a.map(x => `<span class="chip">${x}</span>`).join('')}</div>`).join('');
+  d.innerHTML = `<h2>${sel.title}</h2>` + sel.text.map(t => `<p>${t}</p>`).join('')
+    + (sel.skills ? chips(sel.skills) : '')
+    + (sel.game ? MINES_HTML : '');
+  if (sel.game) initMines(d.querySelector('#mines'));
+  d.classList.remove('fade'); void d.offsetWidth; d.classList.add('fade');
+}
+$('#list').onclick = e => {
+  const b = e.target.closest('[data-id]'); if (!b) return;
+  const n = PROJECTS.find(p => p.id === b.dataset.id), changed = n !== sel;
+  sel = n;
+  renderList(); if (changed) renderDetail();
+};
+$('#filter').onclick = e => {
+  const b = e.target.closest('[data-t]'); if (!b) return;
+  tag = tag === b.dataset.t ? null : b.dataset.t;
+  document.querySelectorAll('[data-t]').forEach(x => x.classList.toggle('on', x.dataset.t === tag));
+  const gone = sel && tag && !sel.tags.includes(tag);
+  if (gone) sel = null;
+  renderList(); if (gone) renderDetail();
+};
+renderList();
+
+/* Démineur 9x9, 10 mines : clic pour révéler, clic droit (ou mode drapeau) pour marquer */
+const MINES_HTML = `<div class="mines" id="mines"><p class="mi"></p><div class="grid"></div><div class="ctrl"><button class="new">[Nouvelle partie]</button><button class="mode">[Mode : révéler]</button></div></div>`;
+
+function initMines(root){
+  const W = 9, H = 9, M = 10;
+  const grid = root.querySelector('.grid'), info = root.querySelector('.mi'), mode = root.querySelector('.mode');
+  let cells, over, started, flags, t0, tEnd, timer, msg, boom, flagMode = false;
+
+  const nb = i => {
+    const x = i % W, y = (i / W) | 0, o = [];
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+      const a = x + dx, b = y + dy;
+      if ((dx || dy) && a >= 0 && a < W && b >= 0 && b < H) o.push(b * W + a);
+    }
+    return o;
+  };
+  const secs = () => started ? Math.floor(((over ? tEnd : Date.now()) - t0) / 1000) : 0;
+  const status = () => {
+    if (!root.isConnected) { clearInterval(timer); return; }
+    info.textContent = `Mines : ${M - flags}   Temps : ${secs()} s   ${msg}`;
+  };
+  function draw(){
+    grid.innerHTML = cells.map((c, i) => {
+      let cls = 'c', t = '';
+      if (c.r) { cls += ' r'; if (c.m) { t = '*'; if (i === boom) cls += ' x'; } else if (c.n) { t = c.n; cls += ' n' + c.n; } }
+      else if (c.f) { cls += ' f'; t = 'F'; }
+      return `<button class="${cls}" data-i="${i}" aria-label="Case ${i + 1}">${t}</button>`;
+    }).join('');
+    status();
+  }
+  function reset(){
+    clearInterval(timer);
+    cells = Array.from({length: W * H}, () => ({m: false, r: false, f: false, n: 0}));
+    over = started = false; flags = 0; msg = ''; boom = -1;
+    draw();
+  }
+  function place(safe){
+    const ban = new Set([safe, ...nb(safe)]);
+    for (let n = 0; n < M;) {
+      const i = Math.floor(Math.random() * W * H);
+      if (!cells[i].m && !ban.has(i)) { cells[i].m = true; n++; }
+    }
+    cells.forEach((c, i) => { c.n = nb(i).filter(j => cells[j].m).length; });
+  }
+  function end(text){ over = true; tEnd = Date.now(); clearInterval(timer); msg = text; }
+  function act(i, flag){
+    if (over) return;
+    const c = cells[i];
+    if (flag) { if (!c.r) { c.f = !c.f; flags += c.f ? 1 : -1; } }
+    else if (!c.f && !c.r) {
+      if (!started) { started = true; t0 = Date.now(); place(i); timer = setInterval(status, 500); }
+      if (c.m) { boom = i; cells.forEach(x => { if (x.m) x.r = true; }); end('Perdu'); }
+      else {
+        const st = [i];
+        while (st.length) { const j = st.pop(), q = cells[j]; if (q.r || q.f) continue; q.r = true; if (!q.n) st.push(...nb(j)); }
+        if (cells.every(x => x.m || x.r)) { cells.forEach(x => { if (x.m) x.f = true; }); flags = M; end('Gagné'); }
+      }
+    }
+    draw();
+  }
+  grid.onclick = e => { const b = e.target.closest('[data-i]'); if (b) act(+b.dataset.i, flagMode); };
+  grid.oncontextmenu = e => { e.preventDefault(); const b = e.target.closest('[data-i]'); if (b) act(+b.dataset.i, true); };
+  root.querySelector('.new').onclick = reset;
+  mode.onclick = () => { flagMode = !flagMode; mode.textContent = `[Mode : ${flagMode ? 'drapeau' : 'révéler'}]`; };
+  reset();
+}
+
+/* Presentation : slider [<] [>] */
+let k = 0;
+function show(n, instant){
+  k = (n + PAINTINGS.length) % PAINTINGS.length;
+  const p = PAINTINGS[k], img = $('#art');
+  const set = () => {
+    img.src = p.src || ph(p.title,520,520);
+    img.alt = p.title;
+    $('#cap').textContent = `${k+1}/${PAINTINGS.length} ${p.title}${p.artist ? ', ' + p.artist : ''}`;
+    img.classList.remove('out');
+  };
+  if (instant) set(); else { img.classList.add('out'); setTimeout(set, 150); }
+}
+$('#prev').onclick = () => show(k-1);
+$('#next').onclick = () => show(k+1);
+addEventListener('keydown', e => {
+  if ($('#presentation').hidden) return;
+  if (e.key === 'ArrowLeft') show(k-1);
+  if (e.key === 'ArrowRight') show(k+1);
+});
+show(0, true);
+</script>
+</body>
+</html>
